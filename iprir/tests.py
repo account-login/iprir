@@ -40,9 +40,9 @@ def patch(obj, key, value):
 
 @contextmanager
 def patch_db_path():
-    fd, text_db_path = tempfile.mkstemp(prefix='iprir_test', suffix='.txt')
+    fd, text_db_path = tempfile.mkstemp(prefix='iprir_test_', suffix='.txt')
     os.close(fd)
-    fd, sql_db_path = tempfile.mkstemp(prefix='iprir_test', suffix='.sqlite')
+    fd, sql_db_path = tempfile.mkstemp(prefix='iprir_test_', suffix='.sqlite')
     os.close(fd)
     print('text_db_path', text_db_path)
     print('sql_db_path', sql_db_path)

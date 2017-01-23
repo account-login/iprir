@@ -4,6 +4,9 @@ import os
 import sys
 
 
+__version__ = '0.1'
+
+
 _MODULE_PATH = pathlib.Path(__file__).parent
 MODULE_PATH = str(_MODULE_PATH)
 TEXT_DB_PATH = _MODULE_PATH.joinpath('delegated-apnic-latest').__str__()

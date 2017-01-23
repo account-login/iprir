@@ -64,7 +64,7 @@ setup(
     author='account-login',
     author_email='',
     description='Retrieve, store and query information about Regional Internet Registries',
-    long_description=read_file('README.md'),
+    long_description=read_file('README.rst'),
     classifiers=[
         # How mature is this project? Common values are
         #   3 - Alpha

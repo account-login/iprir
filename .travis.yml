@@ -8,17 +8,20 @@ python:
 sudo: required
 dist: trusty
 
+env:
+  - IPRIR_DEBUG=1
+
 # command to install dependencies
 install:
   - pip install pytest-sugar
   - pip install pytest-cov
   - pip install codecov
-  - python setup.py install --record record.txt && grep -P "apnic\.sqlite$" record.txt
+  - python setup.py install --record record.txt && grep -P 'apnic\.sqlite$' record.txt
 
 # command to run tests
 script:
-  export IPRIR_DEBUG=1
-  && mkdir -p tmp/ && cd tmp/
+  # test installed package
+  mkdir -p tmp/ && cd tmp/
   && pytest -s --verbose --cov=iprir --pyargs iprir.tests
   && cp .coverage ../ && cd ..
   && codecov

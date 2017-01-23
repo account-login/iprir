@@ -13,7 +13,7 @@ install:
   - pip install pytest-sugar
   - pip install pytest-cov
   - pip install codecov
-  - python setup.py install
+  - python setup.py install --record record.txt && grep -P "apnic\.sqlite$" record.txt
 
 # command to run tests
 script:

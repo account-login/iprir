@@ -13,7 +13,6 @@ install:
   - pip install pytest-sugar
   - pip install pytest-cov
   - pip install codecov
-  - pip install codeclimate-test-reporter
   - python setup.py install
 
 # command to run tests
@@ -23,4 +22,3 @@ script:
   && pytest -s --verbose --cov=iprir --pyargs iprir.tests
   && cp .coverage ../ && cd ..
   && codecov
-  && codeclimate-test-reporter

@@ -20,5 +20,6 @@ install:
 script:
   mkdir -p tmp/ && cd tmp/
   && pytest -s --verbose --cov=iprir --pyargs iprir.tests
+  && cp .coverage ../ && cd ..
   && codecov
   && codeclimate-test-reporter

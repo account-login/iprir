@@ -1,4 +1,3 @@
-import pathlib
 import logging
 import os
 import sys
@@ -7,10 +6,9 @@ import sys
 __version__ = '0.1'
 
 
-_MODULE_PATH = pathlib.Path(__file__).parent
-MODULE_PATH = str(_MODULE_PATH)
-TEXT_DB_PATH = _MODULE_PATH.joinpath('delegated-apnic-latest').__str__()
-SQL_DB_PATH = _MODULE_PATH.joinpath('apnic.sqlite').__str__()
+MODULE_PATH = os.path.dirname(__file__)
+TEXT_DB_PATH = os.path.join(MODULE_PATH, 'delegated-apnic-latest')
+SQL_DB_PATH = os.path.join(MODULE_PATH, 'apnic.sqlite')
 TEXT_DB_URL = 'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest'
 
 

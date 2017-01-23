@@ -1,0 +1,23 @@
+language: python
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+
+# Ubuntu 14.04 Trusty support
+sudo: required
+dist: trusty
+
+# command to install dependencies
+install:
+  - pip install pytest-sugar
+  - pip install pytest-cov
+  - pip install codecov
+  - pip install codeclimate-test-reporter
+
+# command to run tests
+script:
+  mkdir -p tmp/ && cd tmp/
+  && pytest -s --verbose --cov=iprir --pyargs iprir.tests
+  && codecov
+  && codeclimate-test-reporter

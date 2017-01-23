@@ -11,6 +11,7 @@ logger = iprir.logger
 
 
 def update_text_db(*, timeout=30):
+    # TODO: record last modified date from server
     text = requests.get(iprir.TEXT_DB_URL, timeout=timeout).text
 
     old_text_db_path = iprir.TEXT_DB_PATH + '.old'

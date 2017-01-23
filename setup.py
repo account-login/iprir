@@ -54,6 +54,9 @@ setup(
     version=iprir.__version__,
     packages=['iprir'],
     install_requires=['requests'],
+    extra_require={
+        ':python_version<="3.3"': ['pathlib'],
+    },
     url='https://github.com/account-login/iprir',
     license='MIT',
     author='account-login',

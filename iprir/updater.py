@@ -56,3 +56,5 @@ def update(*, timeout=32):
 def initialize(*, timeout=30):
     if not os.path.exists(iprir.TEXT_DB_PATH):
         update(timeout=timeout)
+    elif not os.path.exists(iprir.SQL_DB_PATH):
+        update_sql_db()

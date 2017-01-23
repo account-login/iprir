@@ -7,7 +7,7 @@ import iprir
 
 
 if sys.version_info[:2] < (3, 4):
-    raise SystemError('require Python3.4+')
+    raise SystemExit('require Python3.4+')
 
 
 def read_file(filename):

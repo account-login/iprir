@@ -39,14 +39,14 @@ class BuildDB(Command):
 
 class BuildPy(build_py):
     def run(self):
+        super().run()
+
         import sys
         sys.path.insert(0, self.build_lib)
         try:
             self.run_command('build_db')
         finally:
             sys.path.pop(0)
-
-        super().run()
 
 
 setup(

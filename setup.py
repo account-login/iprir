@@ -60,6 +60,27 @@ setup(
     author_email='',
     description='Retrieve, store and query information about Regional Internet Registries',
     long_description=read_file('README.md'),
+    classifiers=[
+        # How mature is this project? Common values are
+        #   3 - Alpha
+        #   4 - Beta
+        #   5 - Production/Stable
+        'Development Status :: 3 - Alpha',
+
+        # Indicate who your project is intended for
+        'Intended Audience :: Developers',
+        'Topic :: Internet',
+
+        # Pick your license as you wish (should match "license" above)
+        'License :: OSI Approved :: MIT License',
+
+        'Operating System :: OS Independent',
+
+        # Specify the Python versions you support here. In particular, ensure
+        # that you indicate whether you support Python 2, Python 3 or both.
+        'Programming Language :: Python :: 3',
+    ],
+    keywords='IP RIR',
     cmdclass=dict(
         build_db=BuildDB,
         build_py=BuildPy,

@@ -48,11 +48,15 @@ def update_sql_db():
         assert ret
         ret = db.add_records(records)
         assert ret
+    except Exception:
+        logger.error('update sql db failed')
+    else:
+        logger.info('update sql db successed')
     finally:
         db.close()
 
 
-def update(*, timeout=32):
+def update(*, timeout=30):
     update_text_db(timeout=timeout)
     update_sql_db()
 
@@ -62,3 +66,28 @@ def initialize(*, timeout=30):
         update(timeout=timeout)
     elif not os.path.exists(iprir.SQL_DB_PATH):
         update_sql_db()
+
+
+def main():
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser(description='update RIR databases')
+    parser.add_argument(
+        'target', choices=['text', 'sql', 'all'], default='all', nargs='?',
+        help='update text db, sqlite db or both',
+    )
+    parser.add_argument('-t', '--timeout', type=int, default=30)
+
+    option = parser.parse_args()
+    if option.target == 'text':
+        update_text_db(timeout=option.timeout)
+    elif option.target == 'sql':
+        update_sql_db()
+    elif option.target == 'all':
+        update(timeout=option.timeout)
+    else:
+        assert not 'possible'
+
+
+if __name__ == '__main__':
+    main()

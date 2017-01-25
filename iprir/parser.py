@@ -3,6 +3,9 @@ from io import StringIO
 from iprir.record import RIRRecord
 
 
+# ref: http://ftp.apnic.net/apnic/stats/apnic/README.TXT
+
+
 def st_version(line: str):
     return st_sumary, None
 

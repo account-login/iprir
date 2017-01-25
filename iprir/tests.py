@@ -2,12 +2,14 @@ from ipaddress import IPv4Address, IPv6Address, IPv6Network
 from contextlib import contextmanager
 import tempfile
 import os
+import random
 import requests
 
 import iprir
-from iprir.record import RIRRecord
+from iprir.record import RIRRecord, ip_to_int
 from iprir.parser import parse_file, parse_string
 from iprir.database import DB
+from iprir.ipset import IpSet
 import iprir.updater
 
 
@@ -168,3 +170,29 @@ def test_update():
                 assert db.all() == parse_string(SAMPLE_TEXT_DB_CONTENT)
             finally:
                 db.close()
+
+
+def test_ipset():
+    records = parse_string('''
+    2|apnic|20170120|50186|19830613|20170119|+1000
+    apnic|*|ipv6|*|6088|summary
+    apnic|AU|ipv4|1.0.0.0|256|20110811|assigned
+    apnic|CN|ipv4|1.0.1.0|256|20110414|allocated
+    apnic|CN|ipv4|1.0.5.0|256|20110414|allocated
+    ''')
+    random.shuffle(records)
+
+    ipset = IpSet(records)
+    assert ipset.lo == list(map(ip_to_int, map(IPv4Address, ['1.0.0.0', '1.0.5.0'])))
+    assert ipset.hi == list(map(ip_to_int, map(IPv4Address, ['1.0.2.0', '1.0.6.0'])))
+
+    assert IPv4Address('0.255.255.255') not in ipset
+    assert IPv4Address('1.0.0.0') in ipset
+    assert IPv4Address('1.0.1.0') in ipset
+    assert IPv4Address('1.0.1.255') in ipset
+    assert IPv4Address('1.0.2.0') not in ipset
+
+    assert IPv4Address('1.0.4.255') not in ipset
+    assert IPv4Address('1.0.5.0') in ipset
+    assert IPv4Address('1.0.5.255') in ipset
+    assert IPv4Address('1.0.6.0') not in ipset

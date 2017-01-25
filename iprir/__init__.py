@@ -3,7 +3,7 @@ import os
 import sys
 
 
-__version__ = '0.1.0.dev0'
+__version__ = '0.1.1.dev0'
 
 
 MODULE_PATH = os.path.dirname(__file__)

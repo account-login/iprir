@@ -73,10 +73,19 @@ def ipv6_to_int(ip: IPv6Address):
     return int(ip.exploded.replace(':', ''), base=16)
 
 
-def ip_to_key(ip):
+def ip_to_int(ip) -> int:
+    if isinstance(ip, IPv4Address):
+        return ipv4_to_int(ip)
+    elif isinstance(ip, IPv6Address):
+        return ipv6_to_int(ip)
+    else:
+        raise ValueError('ip should be IPv4Address or IPv6Address')
+
+
+def ip_to_key(ip) -> str:
     if isinstance(ip, IPv4Address):
         return '%08x' % ipv4_to_int(ip)
     elif isinstance(ip, IPv6Address):
         return '%032x' % ipv6_to_int(ip)
     else:
-        raise ValueError('ipobj should be IPv4Address or IPv6Address')
+        raise ValueError('ip should be IPv4Address or IPv6Address')

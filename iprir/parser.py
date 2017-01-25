@@ -6,6 +6,9 @@ from iprir.record import RIRRecord
 # ref: http://ftp.apnic.net/apnic/stats/apnic/README.TXT
 
 
+__all__ = ('parse_string', 'parse_file', 'parse_iter',)
+
+
 def st_version(line: str):
     return st_sumary, None
 

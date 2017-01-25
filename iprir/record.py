@@ -5,6 +5,9 @@ from ipaddress import IPv4Address, IPv4Network, IPv6Address, IPv6Network
 from iprir.utils import cached_property
 
 
+__all__ = ('RIRRecord', 'ip_to_int', 'ip_to_key')
+
+
 class RIRRecord(namedtuple('RIRReord', ['country', 'type', 'start', 'value', 'status'])):
     @cached_property
     def length(self):

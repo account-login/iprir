@@ -3,6 +3,9 @@ import bisect
 from iprir.record import RIRRecord, ip_to_int
 
 
+__all__ = ('IpSet',)
+
+
 class IpSet:
     def __init__(self, records):
         """

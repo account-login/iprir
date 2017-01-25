@@ -7,6 +7,9 @@ from iprir.parser import parse_file
 from iprir.database import DB
 
 
+__all__ = ('update_text_db', 'update_sql_db', 'update', 'initialize',)
+
+
 logger = iprir.logger
 
 

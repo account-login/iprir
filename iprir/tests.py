@@ -201,6 +201,7 @@ def test_ipset():
     assert IPv4Address('1.0.5.255') in ipset
     assert IPv4Address('1.0.6.0') not in ipset
 
+    # test IpSet.by_country()
     with patch_db_path() as pathes:
         text_db_path, sql_db_path = pathes
         write_string_to_file(text_db_path, text)
@@ -209,3 +210,10 @@ def test_ipset():
         ipset = IpSet.by_country('ipv4', 'CN')
         assert ipset.lo == to_int(['1.0.1.0', '1.0.5.0'])
         assert ipset.hi == to_int(['1.0.2.0', '1.0.6.0'])
+
+    # test on real data
+    cn4 = IpSet.by_country('ipv4', 'CN')
+    assert IPv4Address('1.2.4.8') in cn4
+    assert IPv4Address('111.13.101.208') in cn4
+    assert IPv4Address('112.124.47.27') in cn4
+    assert IPv4Address('74.125.68.105') not in cn4

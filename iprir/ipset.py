@@ -1,6 +1,7 @@
 import bisect
 
 from iprir.record import RIRRecord, ip_to_int
+from iprir.database import DB
 
 
 __all__ = ('IpSet',)
@@ -46,3 +47,11 @@ class IpSet:
 
     def __contains__(self, ip):
         return self.contains(ip)
+
+    @classmethod
+    def by_country(cls, type_: str, country: str) -> 'IpSet':
+        db = DB()
+        try:
+            return cls(db.by_country(type_, country))
+        finally:
+            db.close()

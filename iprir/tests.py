@@ -173,18 +173,22 @@ def test_update():
 
 
 def test_ipset():
-    records = parse_string('''
+    def to_int(ips):
+        return [ip_to_int(IPv4Address(ip)) for ip in ips]
+
+    text = '''
     2|apnic|20170120|50186|19830613|20170119|+1000
     apnic|*|ipv6|*|6088|summary
     apnic|AU|ipv4|1.0.0.0|256|20110811|assigned
     apnic|CN|ipv4|1.0.1.0|256|20110414|allocated
     apnic|CN|ipv4|1.0.5.0|256|20110414|allocated
-    ''')
+    '''
+    records = parse_string(text)
     random.shuffle(records)
 
     ipset = IpSet(records)
-    assert ipset.lo == list(map(ip_to_int, map(IPv4Address, ['1.0.0.0', '1.0.5.0'])))
-    assert ipset.hi == list(map(ip_to_int, map(IPv4Address, ['1.0.2.0', '1.0.6.0'])))
+    assert ipset.lo == to_int(['1.0.0.0', '1.0.5.0'])
+    assert ipset.hi == to_int(['1.0.2.0', '1.0.6.0'])
 
     assert IPv4Address('0.255.255.255') not in ipset
     assert IPv4Address('1.0.0.0') in ipset
@@ -196,3 +200,12 @@ def test_ipset():
     assert IPv4Address('1.0.5.0') in ipset
     assert IPv4Address('1.0.5.255') in ipset
     assert IPv4Address('1.0.6.0') not in ipset
+
+    with patch_db_path() as pathes:
+        text_db_path, sql_db_path = pathes
+        write_string_to_file(text_db_path, text)
+        iprir.updater.update_sql_db()
+
+        ipset = IpSet.by_country('ipv4', 'CN')
+        assert ipset.lo == to_int(['1.0.1.0', '1.0.5.0'])
+        assert ipset.hi == to_int(['1.0.2.0', '1.0.6.0'])

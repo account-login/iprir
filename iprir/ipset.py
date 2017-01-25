@@ -16,7 +16,7 @@ class IpSet:
         lo = []
         hi = []
         rec_type = None
-        for r in sorted(records):   # type: RIRRecord
+        for r in sorted(records, key=lambda x: x.as_int):   # type: RIRRecord
             if not lo:
                 assert r.type in ('ipv4', 'ipv6')
                 rec_type = r.type

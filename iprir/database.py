@@ -10,12 +10,12 @@ logger = iprir.logger
 
 class DB:
     __CREATE_TALBLE__ = '''
-        CREATE TABLE IF NOT EXISTS apnic (
+        CREATE TABLE IF NOT EXISTS iprir (
             country CHAR(2) NOT NULL,
             type CHAR(4) NOT NULL,
             start TEXT NOT NULL,
             value TEXT NOT NULL,
-            status TEXT NOT NULL,
+            status CHAR(9) NOT NULL,
             ipv4_key_start CHAR(8) UNIQUE,
             ipv4_key_stop CHAR(8) UNIQUE,
             ipv6_key_start CHAR(32) UNIQUE,
@@ -31,10 +31,10 @@ class DB:
         cur = self.conn.cursor()
         try:
             if upgrade:
-                cur.execute('DROP TABLE IF EXISTS apnic')
+                cur.execute('DROP TABLE IF EXISTS iprir')
             cur.execute(self.__CREATE_TALBLE__)
             if not upgrade:
-                cur.execute('DELETE FROM apnic')
+                cur.execute('DELETE FROM iprir')
             self.conn.commit()
         except sqlite3.Error:
             logger.exception('DB.reset_table(%s) failed', upgrade)
@@ -46,7 +46,7 @@ class DB:
     def add_records(self, records):
         try:
             self.conn.cursor().executemany(
-                'INSERT INTO apnic VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                'INSERT INTO iprir VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 (self.record_to_tuple(r) for r in records),
             )
             self.conn.commit()
@@ -71,13 +71,13 @@ class DB:
 
     def all(self):
         cur = self.conn.cursor()
-        cur.execute('SELECT * from apnic')
+        cur.execute('SELECT * from iprir')
         return [self.tuple_to_record(tup) for tup in cur.fetchall()]
 
     def by_country(self, type_: str, country: str):
         cur = self.conn.cursor()
         cur.execute(
-            'SELECT * from apnic WHERE type = :type AND country = :country',
+            'SELECT * from iprir WHERE type = :type AND country = :country',
             dict(type=type_, country=country),
         )
         return [self.tuple_to_record(tup) for tup in cur.fetchall()]
@@ -85,11 +85,11 @@ class DB:
     def by_ip(self, ipobj):
         if isinstance(ipobj, IPv4Address):
             stmt = """
-                SELECT * from apnic WHERE type = 'ipv4'
+                SELECT * from iprir WHERE type = 'ipv4'
                     AND ipv4_key_start <= :ipkey AND :ipkey < ipv4_key_stop"""
         elif isinstance(ipobj, IPv6Address):
             stmt = """
-                SELECT * from apnic WHERE type = 'ipv6'
+                SELECT * from iprir WHERE type = 'ipv6'
                     AND ipv6_key_start <= :ipkey AND :ipkey < ipv6_key_stop"""
         else:
             raise ValueError('ipobj should be IPv4Address or IPv6Address')

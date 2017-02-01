@@ -1,6 +1,7 @@
 import os
 import shutil
 import requests
+import itertools
 
 import iprir
 from iprir.parser import parse_file
@@ -13,34 +14,48 @@ __all__ = ('update_text_db', 'update_sql_db', 'update', 'initialize',)
 logger = iprir.logger
 
 
-def update_text_db(*, timeout=30):
-    # TODO: record last modified date from server
-    text = requests.get(iprir.TEXT_DB_URL, timeout=timeout).text
+def update_text_db(which='all', *, timeout=30):
+    if which == 'all':
+        items = iprir.TEXT_DB_URLS.items()
+    else:
+        items = [(which, iprir.TEXT_DB_URLS[which])]
 
-    old_text_db_path = iprir.TEXT_DB_PATH + '.old'
+    for name, url in items:
+        _update_text_db(url, iprir.TEXT_DB_PATH[name], timeout=timeout)
+
+
+def _update_text_db(url, file, *, timeout=30):
+    # TODO: record last modified date from server
+    # proxies = dict(https='socks5://127.0.0.1:8080')
+    text = requests.get(url, timeout=timeout).text
+
+    old_text_db_path = file + '.old'
     # backup
-    db_exists = os.path.exists(iprir.TEXT_DB_PATH)
+    db_exists = os.path.exists(file)
     if db_exists:
         logger.info('backup text db to %s', old_text_db_path)
-        shutil.copyfile(iprir.TEXT_DB_PATH, old_text_db_path)
+        shutil.copyfile(file, old_text_db_path)
 
     try:
-        with open(iprir.TEXT_DB_PATH, 'wt') as fp:
+        with open(file, 'wt') as fp:
             fp.write(text)
     except:
         logger.error('update text db failed')
         if db_exists:
             logger.info('revert to backup')
-            os.replace(old_text_db_path, iprir.TEXT_DB_PATH)
+            os.replace(old_text_db_path, file)
         raise
     else:
-        logger.info('update text db successed')
+        logger.info('update text db succeeded')
         if db_exists:
             os.unlink(old_text_db_path)
 
 
 def update_sql_db():
-    records = parse_file(iprir.TEXT_DB_PATH)
+    records = itertools.chain.from_iterable(map(parse_file, iprir.TEXT_DB_PATH.values()))
+    records = filter(lambda r: r.type in ('ipv4', 'ipv6'), records)
+    # XXX: avoid conflicts, see iprir.tests:test_ip_overlap()
+    records = filter(lambda r: r.country != 'AP', records)
 
     db = DB()
     try:
@@ -51,7 +66,7 @@ def update_sql_db():
     except Exception:
         logger.error('update sql db failed')
     else:
-        logger.info('update sql db successed')
+        logger.info('update sql db succeeded')
     finally:
         db.close()
 
@@ -62,7 +77,8 @@ def update(*, timeout=30):
 
 
 def initialize(*, timeout=30):
-    if not os.path.exists(iprir.TEXT_DB_PATH):
+    is_init = all(map(os.path.exists, iprir.TEXT_DB_PATH.values()))
+    if not is_init:
         update(timeout=timeout)
     elif not os.path.exists(iprir.SQL_DB_PATH):
         update_sql_db()

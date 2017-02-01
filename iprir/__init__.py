@@ -3,13 +3,22 @@ import os
 import sys
 
 
-__version__ = '0.1.2.dev0'
+__version__ = '0.2.0.dev0'
 
 
 MODULE_PATH = os.path.dirname(__file__)
-TEXT_DB_PATH = os.path.join(MODULE_PATH, 'delegated-apnic-latest')
-SQL_DB_PATH = os.path.join(MODULE_PATH, 'apnic.sqlite')
-TEXT_DB_URL = 'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest'
+SQL_DB_PATH = os.path.join(MODULE_PATH, 'iprir.sqlite')
+TEXT_DB_URLS = dict(
+    afrinic='https://ftp.apnic.net/stats/afrinic/delegated-afrinic-extended-latest',
+    apnic='https://ftp.apnic.net/stats/apnic/delegated-apnic-extended-latest',
+    arin='https://ftp.apnic.net/stats/arin/delegated-arin-extended-latest',
+    lactic='https://ftp.apnic.net/stats/lacnic/delegated-lacnic-extended-latest',
+    ripencc='https://ftp.apnic.net/stats/ripe-ncc/delegated-ripencc-extended-latest',
+)
+TEXT_DB_PATH = {
+    name: os.path.join(MODULE_PATH, name + '.txt')
+    for name in TEXT_DB_URLS.keys()
+}
 
 
 logger = logging.getLogger(__name__)

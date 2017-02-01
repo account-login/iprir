@@ -14,7 +14,7 @@ import iprir.updater
 
 
 iprir.updater.initialize()
-REAL_RECORDS = parse_file(iprir.TEXT_DB_PATH)
+REAL_RECORDS = sum(map(parse_file, iprir.TEXT_DB_PATH.values()), [])
 
 SAMPLE_TEXT_DB_CONTENT = '''
 #
@@ -49,15 +49,16 @@ def patch_db_path():
     print('text_db_path', text_db_path)
     print('sql_db_path', sql_db_path)
 
-    with patch(iprir, 'TEXT_DB_PATH', text_db_path):
-        with patch(iprir, 'SQL_DB_PATH', sql_db_path):
-            try:
-                yield text_db_path, sql_db_path
-            except Exception:
-                raise
-            else:
-                os.remove(text_db_path)
-                os.remove(sql_db_path)
+    with patch(iprir, 'TEXT_DB_PATH', dict(test=text_db_path)):
+        with patch(iprir, 'TEXT_DB_URLS', dict(test='https://dummy/')):
+            with patch(iprir, 'SQL_DB_PATH', sql_db_path):
+                try:
+                    yield text_db_path, sql_db_path
+                except Exception:
+                    raise
+                else:
+                    os.remove(text_db_path)
+                    os.remove(sql_db_path)
 
 
 def write_string_to_file(filename: str, string: str):
@@ -105,6 +106,11 @@ def test_ip_overlap():
     lst4 = []
     lst6 = []
     for r in REAL_RECORDS:
+        if r.country == 'AP':   # asia/pacific
+            # XXX: conflicts
+            # apnic|AP|ipv4|159.117.192.0|2048|19920409|allocated|A928972C
+            # ripencc|NL|ipv4|159.117.192.0|2048|19920409|assigned|
+            continue
         if r.type == 'ipv4':
             lst4.append((r.as_int, r.length))
         elif r.type == 'ipv6':
@@ -167,7 +173,9 @@ def test_update():
             iprir.updater.update()
             db = DB()
             try:
-                assert db.all() == parse_string(SAMPLE_TEXT_DB_CONTENT)
+                records = parse_string(SAMPLE_TEXT_DB_CONTENT)
+                records = list(filter(lambda r: r.type in ('ipv4', 'ipv6'), records))
+                assert db.all() == records
             finally:
                 db.close()
 

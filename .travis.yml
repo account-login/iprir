@@ -16,7 +16,9 @@ install:
   - pip install pytest-sugar
   - pip install pytest-cov
   - pip install codecov
-  - python setup.py install --record record.txt && grep -P 'iprir\.sqlite$' record.txt
+  - python setup.py install --record record.txt
+    && grep -P 'iprir\.sqlite$' record.txt
+    && grep -P 'apnic\.txt$' record.txt
 
 # command to run tests
 script:

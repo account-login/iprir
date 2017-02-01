@@ -26,7 +26,6 @@ def update_text_db(which='all', *, timeout=30):
 
 def _update_text_db(url, file, *, timeout=30):
     # TODO: record last modified date from server
-    # proxies = dict(https='socks5://127.0.0.1:8080')
     text = requests.get(url, timeout=timeout).text
 
     old_text_db_path = file + '.old'
@@ -40,13 +39,13 @@ def _update_text_db(url, file, *, timeout=30):
         with open(file, 'wt') as fp:
             fp.write(text)
     except:
-        logger.error('update text db failed')
+        logger.error('update text db failed: %s', url)
         if db_exists:
-            logger.info('revert to backup')
+            logger.info('revert to backup: %s', old_text_db_path)
             os.replace(old_text_db_path, file)
         raise
     else:
-        logger.info('update text db succeeded')
+        logger.info('update text db succeeded: %s', url)
         if db_exists:
             os.unlink(old_text_db_path)
 

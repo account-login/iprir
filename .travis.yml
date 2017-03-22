@@ -22,8 +22,9 @@ install:
 
 # command to run tests
 script:
-  # test installed package
-  mkdir -p tmp/ && cd tmp/
-  && pytest -s --verbose --cov=iprir --pyargs iprir.tests
-  && cp .coverage ../ && cd ..
-  && codecov
+  - mkdir -p tmp/
+  - cd tmp/   # test installed package
+    && pytest -sv --cov=iprir --pyargs iprir.tests
+    && cp .coverage ../ && cd ..
+  - pytest -sv README.rst   # test README
+  - codecov

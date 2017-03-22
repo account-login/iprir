@@ -15,9 +15,6 @@ from iprir.ipset import IpSet
 import iprir.updater
 
 
-iprir.updater.initialize()
-REAL_RECORDS = sum(map(parse_file, iprir.TEXT_DB_PATH.values()), [])
-
 SAMPLE_TEXT_DB_CONTENT = '''
 #
 2|apnic|20170120|50186|19830613|20170119|+1000
@@ -30,6 +27,14 @@ apnic|CN|ipv4|1.0.1.0|256|20110414|allocated
 apnic|CN|ipv6|2001:250::|35|20000426|allocated
 apnic|CN|ipv6|2001:250:2000::|35|20020726|allocated
 '''
+REAL_RECORDS = None
+
+
+# noinspection PyPep8Naming
+def setUpModule():
+    global REAL_RECORDS
+    iprir.updater.initialize()
+    REAL_RECORDS = sum(map(parse_file, iprir.TEXT_DB_PATH.values()), [])
 
 
 @contextmanager

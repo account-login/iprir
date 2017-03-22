@@ -8,6 +8,9 @@ from iprir.utils import cached_property
 __all__ = ('RIRRecord', 'ip_to_int', 'ip_to_key')
 
 
+# TODO: unify ipv4 and ipv6
+
+
 class RIRRecord(namedtuple('RIRReord', ['country', 'type', 'start', 'value', 'status'])):
     """ref: https://www.arin.net/knowledge/statistics/nro_extended_stats_format.pdf"""
 

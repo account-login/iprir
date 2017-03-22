@@ -1,4 +1,8 @@
 pytest
 pytest-cov
-pytest-sugar
 codecov
+wheel   # We need wheel installed to build wheels
+
+# not required
+pytest-sugar
+coloredlogs

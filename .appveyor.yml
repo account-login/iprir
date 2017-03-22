@@ -12,8 +12,6 @@ environment:
   IPRIR_DEBUG: 1
 
 install:
-  # We need wheel installed to build wheels
-  - pip install wheel
   - pip install -r requirements_ci.txt
   - python setup.py sdist bdist_wheel
   - python setup.py install --record record.txt

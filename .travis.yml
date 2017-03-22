@@ -17,14 +17,10 @@ install:
   - pip install pytest-cov
   - pip install codecov
   - python setup.py install --record record.txt
-    && grep -P 'iprir\.sqlite$' record.txt
-    && grep -P 'apnic\.txt$' record.txt
+  # make sure database is installed
+  - grep -P 'iprir\.sqlite$' record.txt
+  - grep -P 'apnic\.txt$' record.txt
 
 # command to run tests
 script:
-  - mkdir -p tmp/
-  - cd tmp/   # test installed package
-    && pytest -sv --cov=iprir --pyargs iprir.tests
-    && cp .coverage ../ && cd ..
-  - pytest -sv README.rst   # test README
-  - codecov
+  - ci.sh

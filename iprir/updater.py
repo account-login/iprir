@@ -6,12 +6,10 @@ import itertools
 import iprir
 from iprir.parser import parse_file
 from iprir.database import DB
+from iprir.utils import get_logger
 
 
 __all__ = ('update_text_db', 'update_sql_db', 'update', 'initialize',)
-
-
-logger = iprir.logger
 
 
 def update_text_db(which='all', *, timeout=30):
@@ -32,20 +30,20 @@ def _update_text_db(url, file, *, timeout=30):
     # backup
     db_exists = os.path.exists(file)
     if db_exists:
-        logger.info('backup text db to %s', old_text_db_path)
+        get_logger().info('backup text db to %s', old_text_db_path)
         shutil.copyfile(file, old_text_db_path)
 
     try:
         with open(file, 'wt') as fp:
             fp.write(text)
     except:
-        logger.error('update text db failed: %s', url)
+        get_logger().error('update text db failed: %s', url)
         if db_exists:
-            logger.info('revert to backup: %s', old_text_db_path)
+            get_logger().info('revert to backup: %s', old_text_db_path)
             os.replace(old_text_db_path, file)
         raise
     else:
-        logger.info('update text db succeeded: %s', url)
+        get_logger().info('update text db succeeded: %s', url)
         if db_exists:
             os.unlink(old_text_db_path)
 
@@ -63,9 +61,9 @@ def update_sql_db():
         ret = db.add_records(records)
         assert ret
     except Exception:
-        logger.error('update sql db failed')
+        get_logger().error('update sql db failed')
     else:
-        logger.info('update sql db succeeded')
+        get_logger().info('update sql db succeeded')
     finally:
         db.close()
 

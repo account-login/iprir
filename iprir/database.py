@@ -2,10 +2,8 @@ import sqlite3
 from ipaddress import IPv4Address, IPv6Address
 
 import iprir
+from iprir.utils import get_logger
 from iprir.record import RIRRecord, ip_to_key
-
-
-logger = iprir.logger
 
 
 class DB:
@@ -37,7 +35,7 @@ class DB:
                 cur.execute('DELETE FROM iprir')
             self.conn.commit()
         except sqlite3.Error:
-            logger.exception('DB.reset_table(%s) failed', upgrade)
+            get_logger().exception('DB.reset_table(%s) failed', upgrade)
             self.conn.rollback()
             return False
         else:
@@ -51,7 +49,7 @@ class DB:
             )
             self.conn.commit()
         except sqlite3.Error:
-            logger.exception('DB.add_records() failed')
+            get_logger().exception('DB.add_records() failed')
             self.conn.rollback()
             return False
         else:

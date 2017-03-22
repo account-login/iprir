@@ -2,8 +2,13 @@ import logging
 import os
 import sys
 
+# import iprir.api
+# from iprir.api import *
+from iprir.utils import set_logger
 
-__version__ = '0.2.1.dev0'
+
+__version__ = '0.3.0.dev0'
+# __all__ = tuple(iprir.api.__all__)
 
 
 MODULE_PATH = os.path.dirname(__file__)
@@ -22,6 +27,7 @@ TEXT_DB_PATH = {
 
 
 logger = logging.getLogger(__name__)
+set_logger(logger)
 
 
 def setup_logger():

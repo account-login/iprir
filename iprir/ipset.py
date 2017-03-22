@@ -1,7 +1,7 @@
 import bisect
 
-from iprir.record import RIRRecord, ip_to_int
 from iprir.database import DB
+from iprir.record import RIRRecord, ip_to_int
 
 
 __all__ = ('IpSet',)

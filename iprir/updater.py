@@ -50,7 +50,6 @@ def _update_text_db(url, file, *, timeout=30):
 
 def update_sql_db():
     records = itertools.chain.from_iterable(map(parse_file, iprir.TEXT_DB_PATH.values()))
-    records = filter(lambda r: r.type in ('ipv4', 'ipv6'), records)
     # XXX: avoid conflicts, see iprir.tests:test_ip_overlap()
     records = filter(lambda r: r.country != 'AP', records)
 

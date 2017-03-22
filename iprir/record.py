@@ -9,6 +9,8 @@ __all__ = ('RIRRecord', 'ip_to_int', 'ip_to_key')
 
 
 class RIRRecord(namedtuple('RIRReord', ['country', 'type', 'start', 'value', 'status'])):
+    """ref: https://www.arin.net/knowledge/statistics/nro_extended_stats_format.pdf"""
+
     @cached_property
     def length(self):
         if self.type == 'ipv4':

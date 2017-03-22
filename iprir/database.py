@@ -45,7 +45,7 @@ class DB:
         try:
             self.conn.cursor().executemany(
                 'INSERT INTO iprir VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                (self.record_to_tuple(r) for r in records),
+                (self.record_to_tuple(r) for r in records if self.filter_record(r)),
             )
             self.conn.commit()
         except sqlite3.Error:
@@ -66,6 +66,12 @@ class DB:
             tup += (None, None, None, None)
 
         return tup
+
+    @staticmethod
+    def filter_record(record: RIRRecord):
+        """Only add allocated or assigned record to database to avoid primary key conflicts."""
+        return record.status in ('allocated', 'assigned') \
+            and record.type in ('ipv4', 'ipv6')
 
     def all(self):
         cur = self.conn.cursor()

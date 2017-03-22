@@ -111,6 +111,8 @@ def test_ip_overlap():
             # apnic|AP|ipv4|159.117.192.0|2048|19920409|allocated|A928972C
             # ripencc|NL|ipv4|159.117.192.0|2048|19920409|assigned|
             continue
+        if not DB.filter_record(r):
+            continue
         if r.type == 'ipv4':
             lst4.append((r.as_int, r.length))
         elif r.type == 'ipv6':

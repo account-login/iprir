@@ -13,9 +13,7 @@ env:
 
 # command to install dependencies
 install:
-  - pip install pytest-sugar
-  - pip install pytest-cov
-  - pip install codecov
+  - pip install -r requirements_ci.txt
   - python setup.py install --record record.txt
   # make sure database is installed
   - grep -P 'iprir\.sqlite$' record.txt

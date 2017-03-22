@@ -1,5 +1,0 @@
-include iprir/afrinic.txt
-include iprir/apnic.txt
-include iprir/arin.txt
-include iprir/lactic.txt
-include iprir/ripencc.txt

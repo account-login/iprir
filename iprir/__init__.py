@@ -2,13 +2,13 @@ import logging
 import os
 import sys
 
-# import iprir.api
-# from iprir.api import *
+import iprir.api
+from iprir.api import *
 from iprir.utils import set_logger
 
 
 __version__ = '0.3.0.dev0'
-# __all__ = tuple(iprir.api.__all__)
+__all__ = tuple(iprir.api.__all__)
 
 
 MODULE_PATH = os.path.dirname(__file__)

@@ -3,6 +3,8 @@ from contextlib import contextmanager
 import tempfile
 import os
 import random
+import unittest
+
 import requests
 
 import iprir
@@ -221,9 +223,28 @@ def test_ipset():
         assert ipset.lo == to_int(['1.0.1.0', '1.0.5.0'])
         assert ipset.hi == to_int(['1.0.2.0', '1.0.6.0'])
 
-    # test on real data
-    cn4 = IpSet.by_country('ipv4', 'CN')
-    assert IPv4Address('1.2.4.8') in cn4
-    assert IPv4Address('111.13.101.208') in cn4
-    assert IPv4Address('112.124.47.27') in cn4
-    assert IPv4Address('74.125.68.105') not in cn4
+
+class TestIpSetOnRealData(unittest.TestCase):
+    by_country = staticmethod(IpSet.by_country)
+
+    def test_by_country(self):
+        # test on real data
+        cn4 = self.by_country('ipv4', 'CN')
+        assert IPv4Address('1.2.4.8') in cn4
+        assert IPv4Address('111.13.101.208') in cn4
+        assert IPv4Address('112.124.47.27') in cn4
+        assert IPv4Address('74.125.68.105') not in cn4
+
+
+class TestRealDataWithApi(TestIpSetOnRealData):
+    by_country = staticmethod(iprir.by_country)
+
+    def test_by_ip(self):
+        assert iprir.by_ip(IPv4Address('8.8.8.8')) == RIRRecord(
+            country='US', type='ipv4', start='8.0.0.0', value='16777216', status='allocated',
+        )
+
+
+# noinspection PyPep8Naming
+def tearDownModule():
+    iprir.get_db().close()
